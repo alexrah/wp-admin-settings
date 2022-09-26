@@ -8,7 +8,9 @@
     "authors": [
         {
             "name": "alessandro stoppato",
-            "email": "alexrah@gmail.com"
+            "email": "alexrah@gmail.com",
+            "homepage": "http://seld.be"
+
         }
     ],
     "require": {
