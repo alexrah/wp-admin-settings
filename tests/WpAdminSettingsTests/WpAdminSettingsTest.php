@@ -1,7 +1,10 @@
 <?php
-namespace V2mPaywall;
+namespace WpAdminSettingsTest;
 
-class AdminSettingsTest extends BaseTest {
+use PHPUnit\Framework\TestCase;
+use Brain\Monkey;
+
+class WpAdminSettingsTest extends TestCase {
 
 	/**
 	 * @var array
@@ -11,8 +14,19 @@ class AdminSettingsTest extends BaseTest {
 	public function __construct( $name = null, array $data = [], $dataName = '' ) {
 		parent::__construct( $name, $data, $dataName );
 
-		$this->aSettings = AdminSettings::get_stored_option();
+		$this->aSettings = WpAdminSettings::get_stored_option();
 
+	}
+
+	protected function setUp() {
+		parent::setUp();
+		Monkey\setUp();
+	}
+
+	protected function tearDown()
+	{
+		Monkey\tearDown();
+		parent::tearDown();
 	}
 
 	public function testIsPaywallSettingsSet(){

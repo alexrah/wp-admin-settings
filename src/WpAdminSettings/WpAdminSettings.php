@@ -6,11 +6,9 @@
  * Time: 22:20
  */
 
-namespace V2mPaywall;
+namespace WpAdminSettings;
 
-use V2mPaywall\BackendUtils as BU;
-
-class AdminSettings {
+class WpAdminSettings {
 
 	/**
 	 * @var string
@@ -43,7 +41,7 @@ class AdminSettings {
     private $page_description;
 
     /**
-     * @var AdminSettings
+     * @var WpAdminSettings
     */
 	private static $instance = null;
 
@@ -77,7 +75,7 @@ class AdminSettings {
 	}
 
 	/**
-	 * @return AdminSettings
+	 * @return WpAdminSettings
 	 */
 	public static function getInstance()
 	{
