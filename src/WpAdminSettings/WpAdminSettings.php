@@ -51,11 +51,11 @@ class WpAdminSettings {
 	 * @param array{name:string, type:string, label:string, required:bool, admin_only:bool, params: array}[] $options
 	 * @return bool
 	*/
-	protected function __construct($args = [],$options = []) {
+	public function __construct($args = [],$options = []) {
 
 		$args_default = array(
-			'label'      => 'V2Media Paywall',
-			'options_name' => V2MPAYWALL_OPTIONS,
+			'label'      => 'Impostazione Personalizzate',
+			'options_name' => 'alx-admin-settings',
 			'capability' => 'edit_posts',
 		);
 
@@ -72,20 +72,6 @@ class WpAdminSettings {
         $this->set_options($options);
 
 		return true;
-	}
-
-	/**
-	 * @return WpAdminSettings
-	 */
-	public static function getInstance()
-	{
-		if(self::$instance == null)
-		{
-			$c = __CLASS__;
-			self::$instance = new $c;
-		}
-
-		return self::$instance;
 	}
 
 	/**
