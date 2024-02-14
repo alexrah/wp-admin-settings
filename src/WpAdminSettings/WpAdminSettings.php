@@ -23,7 +23,7 @@ class WpAdminSettings {
 	/**
      * @var array
 	*/
-    private array $options_stored;
+    private array|false $options_stored;
 
 	/**
 	 * @var string
@@ -94,9 +94,9 @@ class WpAdminSettings {
 	/**
      * Fill empty keys with default values
      * @param array $option
-     * @return bool|WpAdminOptionData
+     * @return bool|object
 	*/
-	private function set_option_defaults( array $option ): bool|WpAdminOptionData {
+	private function set_option_defaults( array $option ): bool|object {
 
 		$option_default = array(
 			'name' => '',
