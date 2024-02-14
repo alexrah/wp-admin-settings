@@ -13,37 +13,32 @@ class WpAdminSettings {
 	/**
 	 * @var string
 	*/
-	private $label;
+	private string $label;
 
 	/**
 	 * @var string
 	 */
-	private $options_name;
+	private string $options_name;
 
 	/**
      * @var array
 	*/
-    private $options_stored;
+    private array $options_stored;
 
 	/**
 	 * @var string
 	*/
-	private $capability;
+	private string $capability;
 
 	/**
 	 * @var array{name:string, type:string, label:string, required:bool, admin_only:bool, params: array}[]
 	*/
-	private $options;
+	private array $options;
 
 	/**
      * @var string
 	*/
-    private $page_description;
-
-    /**
-     * @var WpAdminSettings
-    */
-	private static $instance = null;
+    private string $page_description;
 
 
 	/**
@@ -51,7 +46,7 @@ class WpAdminSettings {
 	 * @param array{name:string, type:string, label:string, required:bool, admin_only:bool, params: array}[] $options
 	 * @return bool
 	*/
-	public function __construct($args = [],$options = []) {
+	public function __construct(array $args = [],array $options = []) {
 
 		$args_default = array(
 			'label'      => 'Impostazione Personalizzate',
@@ -85,7 +80,7 @@ class WpAdminSettings {
 	 * @param array[] $options
      * @return void
 	 */
-	private function set_options( array $options ) {
+	private function set_options( array $options ):void {
 
 		foreach ($options as &$option){
 
@@ -99,9 +94,9 @@ class WpAdminSettings {
 	/**
      * Fill empty keys with default values
      * @param array $option
-     * @return mixed bool|option_data false
+     * @return bool|WpAdminOptionData
 	*/
-	private function set_option_defaults( $option ){
+	private function set_option_defaults( array $option ): bool|WpAdminOptionData {
 
 		$option_default = array(
 			'name' => '',
@@ -112,10 +107,10 @@ class WpAdminSettings {
 			'params' => array()
 		);
 
+		$option = (object)array_merge($option_default, $option);
 		/**
-         * @var array{name:string, type:string, label:string, required:bool, admin_only:bool, params: array} $option
-		*/
-		$option = (object) array_merge($option_default, $option);
+		 * @var WpAdminOptionData $option
+		 */
 		if( empty($option->name) ) { return false; }
 		if( empty($option->label) ) { $option->label = $option->name; }
 		return $option;
@@ -139,14 +134,14 @@ class WpAdminSettings {
      * @param string $page_description
      * @return void
 	*/
-	public function set_page_description($page_description){
+	public function set_page_description(string $page_description):void{
 		/* return false if $description is not HTML */
 //	    if( $description == strip_tags($description) ) { return false; }
 		$this->page_description = $page_description;
 
 	}
 
-	public function create(){
+	public function create(): void {
 		add_action( 'admin_menu', array($this, 'create_admin_menu') );
 		add_action( 'admin_init', array($this, 'create_settings') );
 		add_filter( 'option_page_capability_' . $this->options_name, function ($capability){
@@ -155,12 +150,11 @@ class WpAdminSettings {
 	}
 
 
-	public function create_admin_menu()
-	{
+	public function create_admin_menu(): void {
 		add_menu_page($this->label, $this->label, $this->capability, $this->options_name, array($this, 'create_options_page'), "dashicons-admin-site", 99);
 	}
 
-	public function create_settings() {
+	public function create_settings(): void {
 
 
 		wp_enqueue_style( 'thickbox' );
@@ -172,6 +166,9 @@ class WpAdminSettings {
 		add_settings_section('default', '','',$this->options_name);
 
 
+		/**
+		 * @var WpAdminOptionData $option
+		 */
 		foreach ($this->options as $option){
 
 		    $callback = 'render_'. $option->type .'_field';
@@ -181,7 +178,7 @@ class WpAdminSettings {
 
 	}
 	
-	public function create_options_page() { ?>
+	public function create_options_page(): void { ?>
 		<div class="settings-description"><?php echo $this->page_description; ?></div>
         <form id="setting-form" class="setting-form-v2media" action='options.php' method='post'>
 			<?php
@@ -280,11 +277,12 @@ class WpAdminSettings {
 	}
 
 	/**
-	 * @param string $option_id
+	 *
 	 * @param string $options_name
+	 * @param string|null $option_id
 	 * @return mixed Value set for the option
 	 * */
-	public static function get_stored_option( $option_id = null, $options_name =  V2MPAYWALL_OPTIONS) {
+	public static function get_stored_option( string $options_name, string|null $option_id = null):mixed {
 
 		$options = get_option( $options_name );
 		if ( isset( $options[ $option_id ] ) ) {
@@ -300,9 +298,9 @@ class WpAdminSettings {
 	/**
 	 * @param array $option
 	 */
-	public function render_checkbox_field( $option  ) {
+	public function render_checkbox_field( array $option  ): void {
 		/**
-		 * @var option_data $option
+		 * @var WpAdminOptionData $option
 		 */
 		$option = (object)$option;
 		$required = ($option->required)?"required":"";
@@ -315,10 +313,10 @@ class WpAdminSettings {
 	/**
      * @param array $option
 	*/
-	public function render_text_field( $option  ) {
+	public function render_text_field( array $option  ): void {
 
 	    /**
-         * @var option_data $option
+         * @var WpAdminOptionData $option
 	    */
 	    $option = (object)$option;
 		$required = ($option->required)?"required":"";
@@ -332,10 +330,10 @@ class WpAdminSettings {
 	/**
 	 * @param array $option
 	 */
-	public function render_textarea_field( $option  ) {
+	public function render_textarea_field( array $option  ): void {
 
 		/**
-		 * @var option_data $option
+		 * @var WpAdminOptionData $option
 		 */
 		$option = (object)$option;
 		$required = ($option->required)?"required":"";
@@ -348,10 +346,10 @@ class WpAdminSettings {
 	/**
 	 * @param array $option
 	 */
-	public function render_select_field( $option ) {
+	public function render_select_field( array $option ): void {
 
 		/**
-		 * @var option_data $option
+		 * @var WpAdminOptionData $option
 		 */
 		$option = (object)$option;
 		$required = ($option->required)?"required":"";
@@ -418,7 +416,7 @@ class WpAdminSettings {
 	/**
 	 * @param array $option
 	 */
-	public function render_image_field( $option ) {
+	public function render_image_field( array $option ): void {
 
 		$option = (object)$option;
 		$required = ($option->required)?"required":"";
